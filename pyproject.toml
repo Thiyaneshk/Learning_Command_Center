@@ -1,0 +1,15 @@
+[project]
+name = "learning-command-center"
+version = "0.1.0"
+description = "Personal Streamlit app to track DE/ML/DS learning resources using DuckDB."
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.dependencies]
+streamlit = "*"
+pandas = "*"
+duckdb = "*"
+pyyaml = "*"
+
+[tool.uv]
+default-groups = ["default"]
