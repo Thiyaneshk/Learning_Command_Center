@@ -1,0 +1,27 @@
+topics:
+  - Data Engineering
+  - Machine Learning
+  - Data Science
+  - Cloud
+  - Org
+  - Personal
+
+providers:
+  - Columbia
+  - Coursera
+  - dbt Docs
+  - Oracle University
+  - YouTube
+  - Blog
+  - Other
+
+statuses:
+  - Backlog
+  - In-Progress
+  - Completed
+  - Dropped
+
+difficulties:
+  - Beginner
+  - Intermediate
+  - Advanced
