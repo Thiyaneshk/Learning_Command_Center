@@ -122,6 +122,8 @@ def sidebar_add_resource(cfg):
 
 
 def main_resources_view(topic_ids, providers, statuses, search_text):
+    st.title("Bookmarks & Resources")
+
     st.title("Learning Command Center")
     st.caption("Track DE / ML / DS learning resources and study sessions")
 
