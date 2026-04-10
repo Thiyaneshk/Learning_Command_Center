@@ -22,7 +22,12 @@ from db import (
     update_last_accessed,
     update_resource_status,
 )
-
+st.set_page_config(
+    page_title="Learning Command Center",
+    page_icon="🧠",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 st.set_page_config(page_title="Learning Command Center", layout="wide")
 
@@ -123,6 +128,24 @@ def sidebar_add_resource(cfg):
 
 def main_resources_view(topic_ids, providers, statuses, search_text):
     st.title("Bookmarks & Resources")
+    st.caption("Track DE / ML / DS learning resources and study sessions")
+
+    st.subheader("Daily work launchpad")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("Jira Board"):
+            webbrowser.open("https://your-jira-url-here")
+
+    with col2:
+        if st.button("Outlook Web"):
+            webbrowser.open("https://outlook.office.com/mail")
+
+    with col3:
+        if st.button("Org Wiki"):
+            webbrowser.open("https://your-confluence-or-wiki-url")
+
+    st.markdown("---")  # separator
 
     st.title("Learning Command Center")
     st.caption("Track DE / ML / DS learning resources and study sessions")
