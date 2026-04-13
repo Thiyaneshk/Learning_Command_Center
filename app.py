@@ -1,5 +1,5 @@
 import webbrowser
-from datetime import date
+from datetime import date, timedelta
 
 import pandas as pd
 import streamlit as st
@@ -51,13 +51,61 @@ def init_app():
 cfg = init_app()
 
 
+def compute_streaks(sessions_df: pd.DataFrame):
+    if sessions_df.empty:
+        return 0, 0
+
+    dates = pd.to_datetime(sessions_df["session_date"]).dt.date.dropna().unique()
+    if len(dates) == 0:
+        return 0, 0
+
+    dates = sorted(dates)
+    today = date.today()
+    date_set = set(dates)
+
+    current = 0
+    day = today
+    while day in date_set:
+        current += 1
+        day -= timedelta(days=1)
+
+    longest = 1
+    streak = 1
+    for i in range(1, len(dates)):
+        if dates[i] == dates[i - 1] + timedelta(days=1):
+            streak += 1
+        else:
+            longest = max(longest, streak)
+            streak = 1
+    longest = max(longest, streak)
+
+    return current, longest
+
+
+def compute_roadmap_completion(techs: list[dict]):
+    if not techs:
+        return {}, 0.0, {}
+
+    df = pd.DataFrame(techs)
+    df = df.copy()
+    df["target_expertise"] = df["target_expertise"].replace(0, 1)
+    df["completion_ratio"] = df["current_expertise"] / df["target_expertise"]
+
+    by_cat = df.groupby("category")["completion_ratio"].mean().to_dict()
+    overall = float(df["completion_ratio"].mean())
+    mastered_by_cat = df[df["status"] == "mastered"].groupby("category").size().to_dict()
+
+    return by_cat, overall, mastered_by_cat
+
+
 def sidebar_filters(cfg):
     st.sidebar.header("Filters")
 
     topics_df = pd.DataFrame(list_topics(), columns=["id", "name"])
     topic_map = {row["name"]: row["id"] for _, row in topics_df.iterrows()} if not topics_df.empty else {}
 
-    selected_topics = st.sidebar.multiselect("Topic", options=list(topic_map.keys()), default=list(topic_map.keys()))
+    default_topics = ["Data Engineering"] if "Data Engineering" in topic_map else list(topic_map.keys())
+    selected_topics = st.sidebar.multiselect("Topic", options=list(topic_map.keys()), default=default_topics)
     topic_ids = [topic_map[name] for name in selected_topics]
 
     providers = get_providers_from_config(cfg)
@@ -241,7 +289,43 @@ def sessions_view():
     sessions_df = list_sessions()
     if sessions_df.empty:
         st.info("No sessions logged yet.")
+        st.caption("Log your first study session above to start tracking streaks and minutes.")
     else:
+        sessions_df["session_date"] = pd.to_datetime(sessions_df["session_date"]).dt.date
+        current_streak, longest_streak = compute_streaks(sessions_df)
+
+        last_7 = date.today() - timedelta(days=7)
+        last_30 = date.today() - timedelta(days=30)
+        recent_7 = sessions_df[sessions_df["session_date"] >= last_7]
+        recent_30 = sessions_df[sessions_df["session_date"] >= last_30]
+
+        minutes_7 = int(recent_7["duration_minutes"].sum()) if not recent_7.empty else 0
+        minutes_30 = int(recent_30["duration_minutes"].sum()) if not recent_30.empty else 0
+        resources_7 = recent_7["resource_title"].nunique() if not recent_7.empty else 0
+
+        col_a, col_b, col_c, col_d = st.columns(4)
+        with col_a:
+            st.metric("Current streak", f"{current_streak} days")
+        with col_b:
+            st.metric("Longest streak", f"{longest_streak} days")
+        with col_c:
+            st.metric("Minutes last 7 days", minutes_7)
+        with col_d:
+            st.metric("Minutes last 30 days", minutes_30)
+
+        if not resources_df.empty:
+            merged = sessions_df.merge(
+                resources_df[["title", "topic", "provider", "resource_type"]],
+                left_on="resource_title",
+                right_on="title",
+                how="left",
+            )
+            if "topic" in merged.columns and not merged["topic"].dropna().empty:
+                topic_chart = merged.groupby("topic")["duration_minutes"].sum().sort_values(ascending=False)
+                if not topic_chart.empty:
+                    st.subheader("Time spent by topic")
+                    st.bar_chart(topic_chart)
+
         st.dataframe(sessions_df, use_container_width=True, hide_index=True)
 
 
@@ -253,6 +337,24 @@ def progress_view():
     if not techs:
         st.info("No technologies configured yet.")
         return
+
+    by_cat, overall_completion, mastered_by_cat = compute_roadmap_completion(techs)
+
+    st.subheader("Roadmap summary")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Overall completion", f"{overall_completion * 100:.0f}%")
+    with col2:
+        total_mastered = sum(mastered_by_cat.values()) if mastered_by_cat else 0
+        st.metric("Technologies mastered", total_mastered)
+
+    for cat, ratio in by_cat.items():
+        nice_cat = cat.replace("_", " ").title()
+        mastered = mastered_by_cat.get(cat, 0)
+        st.write(f"{nice_cat} — {ratio * 100:.0f}% complete, {mastered} mastered")
+        st.progress(ratio)
+
+    st.markdown("---")
 
     # Group by category
     categories = {}
