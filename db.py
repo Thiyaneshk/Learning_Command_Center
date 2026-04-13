@@ -1,4 +1,5 @@
 import duckdb
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -78,6 +79,71 @@ def upsert_topic(name: str) -> None:
 def sync_topics_from_config(topic_names: List[str]) -> None:
     for name in topic_names:
         upsert_topic(name)
+
+
+def get_or_create_topic(name: str) -> Optional[int]:
+    if not name:
+        return None
+
+    upsert_topic(name)
+    con = get_connection()
+    row = con.execute("SELECT id FROM topics WHERE name = ?", [name]).fetchone()
+    return int(row[0]) if row else None
+
+
+def resource_exists(url: str, title: str) -> bool:
+    con = get_connection()
+    row = con.execute(
+        "SELECT 1 FROM resources WHERE LOWER(url) = LOWER(?) OR LOWER(title) = LOWER(?) LIMIT 1",
+        [url or "", title or ""],
+    ).fetchone()
+    return row is not None
+
+
+def sync_resources_from_json(json_path: Path) -> tuple[int, int]:
+    if not json_path.exists():
+        return 0, 0
+
+    with json_path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+
+    resources = []
+    if isinstance(payload, dict):
+        resources = payload.get("resources", [])
+    elif isinstance(payload, list):
+        resources = payload
+
+    inserted = 0
+    skipped = 0
+
+    for item in resources:
+        title = item.get("title")
+        url = item.get("url")
+        if not title or not url:
+            continue
+
+        if resource_exists(url, title):
+            skipped += 1
+            continue
+
+        topic_id = get_or_create_topic(item.get("topic")) if item.get("topic") else None
+        insert_resource(
+            {
+                "title": title,
+                "url": url,
+                "provider": item.get("provider"),
+                "resource_type": item.get("resource_type"),
+                "topic_id": topic_id,
+                "difficulty": item.get("difficulty"),
+                "status": item.get("status"),
+                "tags": item.get("tags"),
+                "notes": item.get("notes"),
+                "rating": item.get("rating"),
+            }
+        )
+        inserted += 1
+
+    return inserted, skipped
 
 
 def list_topics() -> List[Dict[str, Any]]:

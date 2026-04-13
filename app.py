@@ -1,5 +1,7 @@
+import json
 import webbrowser
 from datetime import date, timedelta
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -25,6 +27,7 @@ from db import (
     update_last_accessed,
     update_resource_status,
     update_technology_expertise,
+    sync_resources_from_json,
 )
 
 st.set_page_config(
@@ -117,6 +120,35 @@ def sidebar_filters(cfg):
     search_text = st.sidebar.text_input("Search in title/tags")
 
     return topic_ids, selected_providers, selected_statuses, search_text
+
+
+def sidebar_import_resources(cfg):
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Import resources")
+
+    resources_file = Path("resources.json")
+    if resources_file.exists():
+        st.sidebar.write("Found `resources.json` in app folder.")
+        if st.sidebar.button("Sync resources from resources.json"):
+            inserted, skipped = sync_resources_from_json(resources_file)
+            if inserted or skipped:
+                st.sidebar.success(f"Imported {inserted} resources, skipped {skipped} existing ones.")
+            else:
+                st.sidebar.info("No new resources matched or the file was empty.")
+    else:
+        st.sidebar.warning("No resources.json file found in the app folder.")
+
+    uploaded_file = st.sidebar.file_uploader("Upload resource JSON", type=["json"])
+    if uploaded_file:
+        try:
+            content = json.load(uploaded_file)
+            temp_path = Path("resources.json")
+            with temp_path.open("w", encoding="utf-8") as f:
+                json.dump(content, f, indent=2)
+            inserted, skipped = sync_resources_from_json(temp_path)
+            st.sidebar.success(f"Uploaded and synced {inserted} resources, skipped {skipped} existing ones.")
+        except Exception as exc:
+            st.sidebar.error(f"Failed to load JSON: {exc}")
 
 
 def sidebar_add_resource(cfg):
@@ -404,6 +436,7 @@ def progress_view():
 def main():
     page = st.sidebar.radio("View", ["Resources", "Sessions", "Progress"])
     topic_ids, providers, statuses, search_text = sidebar_filters(cfg)
+    sidebar_import_resources(cfg)
     sidebar_add_resource(cfg)
 
     if page == "Resources":
