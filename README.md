@@ -81,9 +81,40 @@ Based on your strong foundation in databases (PLSQL, Oracle, Db2, MSSQL) and int
 
 ## Setup
 
+Make sure you have [uv](https://github.com/astral-sh/uv) installed, then:
+
 ```bash
-python -m venv .venv
+# Install dependencies and create virtual environment
+uv sync
+
+# Activate the virtual environment (optional, uv run handles this automatically)
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
-streamlit run app.py
+
+# Run the app
+uv run streamlit run app.py
 ```
+
+### Development Setup
+
+```bash
+# Install dev dependencies
+uv sync --dev
+
+# Run tests
+uv run pytest
+
+# Run linting
+uv run flake8
+
+# Format code
+uv run black .
+
+# Update dependencies
+uv lock --upgrade
+```
+
+### Project Structure
+
+- `pyproject.toml`: Project configuration and dependencies
+- `uv.lock`: Lock file for reproducible builds
+- `.venv/`: Virtual environment (created by uv sync)
