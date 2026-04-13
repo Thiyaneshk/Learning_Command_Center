@@ -55,6 +55,21 @@ def init_db() -> None:
         """
     )
 
+    con.execute(
+        """
+        CREATE TABLE IF NOT EXISTS technologies (
+            id INTEGER PRIMARY KEY,
+            name TEXT UNIQUE NOT NULL,
+            category TEXT NOT NULL,  -- 'data_engineering', 'data_science', 'machine_learning'
+            current_expertise INTEGER DEFAULT 0,  -- 0-5 scale
+            target_expertise INTEGER DEFAULT 5,
+            status TEXT DEFAULT 'to_learn',  -- 'to_learn', 'learning', 'mastered'
+            priority TEXT DEFAULT 'medium',  -- 'high', 'medium', 'low'
+            description TEXT
+        );
+        """
+    )
+
 
 def upsert_topic(name: str) -> None:
     con = get_connection()
@@ -194,3 +209,42 @@ def list_sessions():
         ORDER BY s.session_date DESC, s.id DESC
         """
     ).df()
+
+
+def upsert_technology(name: str, category: str, priority: str, description: str) -> None:
+    con = get_connection()
+    con.execute(
+        """
+        INSERT INTO technologies(id, name, category, priority, description)
+        SELECT COALESCE(MAX(id), 0) + 1, ?, ?, ?, ?
+        FROM technologies
+        ON CONFLICT(name) DO UPDATE SET
+            category = excluded.category,
+            priority = excluded.priority,
+            description = excluded.description;
+        """,
+        [name, category, priority, description],
+    )
+
+
+def sync_technologies_from_config(tech_config: Dict) -> None:
+    for category, techs in tech_config.items():
+        for tech in techs:
+            upsert_technology(
+                tech['name'], category, tech.get('priority', 'medium'), tech.get('description', '')
+            )
+
+
+def list_technologies() -> List[Dict[str, Any]]:
+    con = get_connection()
+    return con.execute(
+        "SELECT id, name, category, current_expertise, target_expertise, status, priority, description FROM technologies ORDER BY category, priority DESC, name"
+    ).df().to_dict('records')
+
+
+def update_technology_expertise(tech_id: int, current_expertise: int, status: str) -> None:
+    con = get_connection()
+    con.execute(
+        "UPDATE technologies SET current_expertise = ?, status = ? WHERE id = ?",
+        [current_expertise, status, tech_id],
+    )

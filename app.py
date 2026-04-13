@@ -8,6 +8,7 @@ from config_loader import (
     get_difficulties_from_config,
     get_providers_from_config,
     get_statuses_from_config,
+    get_technologies_from_config,
     get_topics_from_config,
     load_config,
 )
@@ -17,10 +18,13 @@ from db import (
     insert_session,
     list_resources,
     list_sessions,
+    list_technologies,
     list_topics,
+    sync_technologies_from_config,
     sync_topics_from_config,
     update_last_accessed,
     update_resource_status,
+    update_technology_expertise,
 )
 st.set_page_config(
     page_title="Learning Command Center",
@@ -38,6 +42,7 @@ def init_app():
     # Initialize and sync DB
     init_db()
     sync_topics_from_config(get_topics_from_config(cfg))
+    sync_technologies_from_config(get_technologies_from_config(cfg))
 
     return cfg
 
@@ -249,15 +254,71 @@ def sessions_view():
         st.dataframe(sessions_df, use_container_width=True, hide_index=True)
 
 
+def progress_view():
+    st.header("Learning Progress")
+    st.caption("Track your expertise in DE/DS/ML technologies")
+
+    techs = list_technologies()
+    if not techs:
+        st.info("No technologies configured yet.")
+        return
+
+    # Group by category
+    categories = {}
+    for tech in techs:
+        cat = tech['category'].replace('_', ' ').title()
+        if cat not in categories:
+            categories[cat] = []
+        categories[cat].append(tech)
+
+    for cat_name, cat_techs in categories.items():
+        st.subheader(cat_name)
+        
+        for tech in cat_techs:
+            with st.expander(f"{tech['name']} ({tech['priority']} priority)"):
+                st.write(f"**Description:** {tech['description']}")
+                st.write(f"**Current Expertise:** {tech['current_expertise']}/5")
+                st.write(f"**Target:** {tech['target_expertise']}/5")
+                st.write(f"**Status:** {tech['status'].replace('_', ' ').title()}")
+                
+                # Progress bar
+                progress = tech['current_expertise'] / tech['target_expertise']
+                st.progress(progress)
+                
+                # Update form
+                with st.form(f"update_{tech['id']}", clear_on_submit=True):
+                    new_expertise = st.slider(
+                        "Update Expertise (0-5)", 
+                        min_value=0, 
+                        max_value=5, 
+                        value=tech['current_expertise'],
+                        key=f"expertise_{tech['id']}"
+                    )
+                    status_options = ["to_learn", "learning", "mastered"]
+                    new_status = st.selectbox(
+                        "Status", 
+                        options=status_options,
+                        index=status_options.index(tech['status']) if tech['status'] in status_options else 0,
+                        key=f"status_{tech['id']}"
+                    )
+                    
+                    if st.form_submit_button("Update"):
+                        update_technology_expertise(tech['id'], new_expertise, new_status)
+                        st.success("Updated!")
+                        st.rerun()
+
+
 def main():
-    page = st.sidebar.radio("View", ["Resources", "Sessions"])
+    page = st.sidebar.radio("View", ["Resources", "Sessions", "Progress"])
     topic_ids, providers, statuses, search_text = sidebar_filters(cfg)
     sidebar_add_resource(cfg)
 
     if page == "Resources":
         main_resources_view(topic_ids, providers, statuses, search_text)
-    else:
+    elif page == "Sessions":
         sessions_view()
+    else:
+        progress_view()
 
 
 if __name__ == "__main__":

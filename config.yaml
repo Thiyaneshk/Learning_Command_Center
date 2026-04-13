@@ -25,3 +25,78 @@ difficulties:
   - Beginner
   - Intermediate
   - Advanced
+
+# Predefined technology roadmaps for DE/DS/ML progression
+technologies:
+  data_engineering:
+    - name: SQL
+      description: Advanced SQL querying, optimization, window functions
+      priority: high
+    - name: Python
+      description: Data manipulation with Pandas, scripting for ETL
+      priority: high
+    - name: dbt
+      description: Data transformation and modeling
+      priority: high
+    - name: Airflow
+      description: Workflow orchestration for data pipelines
+      priority: high
+    - name: AWS/GCP
+      description: Cloud platforms for data storage and compute
+      priority: high
+    - name: Databricks/Snowflake
+      description: Modern data warehouses and lakehouses
+      priority: high
+    - name: Apache Spark
+      description: Distributed data processing
+      priority: medium
+    - name: Kafka
+      description: Event streaming for real-time data
+      priority: medium
+    - name: Docker/Kubernetes
+      description: Containerization and orchestration
+      priority: medium
+  data_science:
+    - name: Python
+      description: Core language for data analysis
+      priority: high
+    - name: Pandas/NumPy
+      description: Data manipulation and numerical computing
+      priority: high
+    - name: Matplotlib/Seaborn
+      description: Data visualization libraries
+      priority: high
+    - name: Scikit-learn
+      description: Machine learning algorithms and tools
+      priority: high
+    - name: SQL
+      description: Data querying for analysis
+      priority: high
+    - name: Jupyter Notebooks
+      description: Interactive data exploration
+      priority: medium
+    - name: Statistics/Probability
+      description: Foundational math for DS
+      priority: medium
+    - name: A/B Testing
+      description: Experimental design and analysis
+      priority: medium
+  machine_learning:
+    - name: Scikit-learn
+      description: Traditional ML algorithms
+      priority: high
+    - name: TensorFlow/PyTorch
+      description: Deep learning frameworks
+      priority: high
+    - name: Feature Engineering
+      description: Creating effective ML features
+      priority: high
+    - name: Model Evaluation
+      description: Metrics, validation, overfitting prevention
+      priority: high
+    - name: MLOps
+      description: ML model deployment and monitoring
+      priority: medium
+    - name: Computer Vision/NLP
+      description: Specialized ML domains
+      priority: medium

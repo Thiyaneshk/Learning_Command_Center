@@ -32,3 +32,7 @@ def get_statuses_from_config(cfg: Dict) -> List[str]:
 
 def get_difficulties_from_config(cfg: Dict) -> List[str]:
     return cfg.get("difficulties", [])
+
+
+def get_technologies_from_config(cfg: Dict) -> Dict:
+    return cfg.get("technologies", {})
