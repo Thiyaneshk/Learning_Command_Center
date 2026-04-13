@@ -29,8 +29,8 @@ jobs:
     
     - name: Lint with flake8
       run: |
-        uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv
+        uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude .venv
     
     - name: Format check with black
       run: uv run black --check --diff .
@@ -38,21 +38,10 @@ jobs:
     - name: Run tests
       run: uv run pytest --tb=short --strict-markers
     
-    - name: Lint with flake8
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    
-    - name: Format check with black
-      run: black --check --diff .
-    
-    - name: Run tests
-      run: pytest --tb=short --strict-markers
-    
     - name: Build and test Streamlit app
       run: |
-        python -c "import streamlit; print('Streamlit import successful')"
-        python -c "from app import init_app; init_app(); print('App initialization successful')"
+        uv run python -c "import streamlit; print('Streamlit import successful')"
+        uv run python -c "from app import init_app; init_app(); print('App initialization successful')"
 
   deploy:
     needs: test

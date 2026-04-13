@@ -17,5 +17,10 @@ dev-dependencies = [
     "pytest>=7.0.0",
     "flake8>=6.0.0",
     "black>=23.0.0"
-] 
+]
+
+[tool.flake8]
+exclude = ".venv,.git,__pycache__,.pytest_cache,data"
+max-line-length = 127
+
 
