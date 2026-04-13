@@ -26,6 +26,7 @@ from db import (
     update_resource_status,
     update_technology_expertise,
 )
+
 st.set_page_config(
     page_title="Learning Command Center",
     page_icon="🧠",
@@ -56,20 +57,14 @@ def sidebar_filters(cfg):
     topics_df = pd.DataFrame(list_topics(), columns=["id", "name"])
     topic_map = {row["name"]: row["id"] for _, row in topics_df.iterrows()} if not topics_df.empty else {}
 
-    selected_topics = st.sidebar.multiselect(
-        "Topic", options=list(topic_map.keys()), default=list(topic_map.keys())
-    )
+    selected_topics = st.sidebar.multiselect("Topic", options=list(topic_map.keys()), default=list(topic_map.keys()))
     topic_ids = [topic_map[name] for name in selected_topics]
 
     providers = get_providers_from_config(cfg)
-    selected_providers = st.sidebar.multiselect(
-        "Provider", options=providers, default=providers
-    )
+    selected_providers = st.sidebar.multiselect("Provider", options=providers, default=providers)
 
     statuses = get_statuses_from_config(cfg)
-    selected_statuses = st.sidebar.multiselect(
-        "Status", options=statuses, default=statuses
-    )
+    selected_statuses = st.sidebar.multiselect("Status", options=statuses, default=statuses)
 
     search_text = st.sidebar.text_input("Search in title/tags")
 
@@ -87,9 +82,7 @@ def sidebar_add_resource(cfg):
         providers = get_providers_from_config(cfg)
         provider = st.selectbox("Provider", options=providers)
 
-        resource_type = st.selectbox(
-            "Type", options=["Course", "Article", "Docs", "Video", "Playlist", "Other"]
-        )
+        resource_type = st.selectbox("Type", options=["Course", "Article", "Docs", "Video", "Playlist", "Other"])
 
         topics_df = pd.DataFrame(list_topics(), columns=["id", "name"])
         topic_name = None
@@ -184,9 +177,7 @@ def main_resources_view(topic_ids, providers, statuses, search_text):
     st.dataframe(df[display_cols], use_container_width=True, hide_index=True)
 
     with st.expander("Update status / open resource"):
-        selected_id = st.number_input(
-            "Resource ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1
-        )
+        selected_id = st.number_input("Resource ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
 
         row = df[df["id"] == selected_id]
         if not row.empty:
@@ -198,9 +189,11 @@ def main_resources_view(topic_ids, providers, statuses, search_text):
                 new_status = st.selectbox(
                     "New status",
                     options=get_statuses_from_config(cfg),
-                    index=get_statuses_from_config(cfg).index(row["status"].iloc[0])
-                    if row["status"].iloc[0] in get_statuses_from_config(cfg)
-                    else 0,
+                    index=(
+                        get_statuses_from_config(cfg).index(row["status"].iloc[0])
+                        if row["status"].iloc[0] in get_statuses_from_config(cfg)
+                        else 0
+                    ),
                     key="status_select",
                 )
 
@@ -227,9 +220,7 @@ def sessions_view():
 
     with st.form("add_session_form", clear_on_submit=True):
         resource_title = st.selectbox("Resource", options=resources_df["title"].tolist())
-        resource_id = int(
-            resources_df[resources_df["title"] == resource_title]["id"].iloc[0]
-        )
+        resource_id = int(resources_df[resources_df["title"] == resource_title]["id"].iloc[0])
         session_date = st.date_input("Date", value=date.today())
         duration = st.number_input("Duration (minutes)", min_value=0, max_value=600, value=30)
         notes = st.text_area("Notes", height=80)
@@ -266,44 +257,44 @@ def progress_view():
     # Group by category
     categories = {}
     for tech in techs:
-        cat = tech['category'].replace('_', ' ').title()
+        cat = tech["category"].replace("_", " ").title()
         if cat not in categories:
             categories[cat] = []
         categories[cat].append(tech)
 
     for cat_name, cat_techs in categories.items():
         st.subheader(cat_name)
-        
+
         for tech in cat_techs:
             with st.expander(f"{tech['name']} ({tech['priority']} priority)"):
                 st.write(f"**Description:** {tech['description']}")
                 st.write(f"**Current Expertise:** {tech['current_expertise']}/5")
                 st.write(f"**Target:** {tech['target_expertise']}/5")
                 st.write(f"**Status:** {tech['status'].replace('_', ' ').title()}")
-                
+
                 # Progress bar
-                progress = tech['current_expertise'] / tech['target_expertise']
+                progress = tech["current_expertise"] / tech["target_expertise"]
                 st.progress(progress)
-                
+
                 # Update form
                 with st.form(f"update_{tech['id']}", clear_on_submit=True):
                     new_expertise = st.slider(
-                        "Update Expertise (0-5)", 
-                        min_value=0, 
-                        max_value=5, 
-                        value=tech['current_expertise'],
-                        key=f"expertise_{tech['id']}"
+                        "Update Expertise (0-5)",
+                        min_value=0,
+                        max_value=5,
+                        value=tech["current_expertise"],
+                        key=f"expertise_{tech['id']}",
                     )
                     status_options = ["to_learn", "learning", "mastered"]
                     new_status = st.selectbox(
-                        "Status", 
+                        "Status",
                         options=status_options,
-                        index=status_options.index(tech['status']) if tech['status'] in status_options else 0,
-                        key=f"status_{tech['id']}"
+                        index=status_options.index(tech["status"]) if tech["status"] in status_options else 0,
+                        key=f"status_{tech['id']}",
                     )
-                    
+
                     if st.form_submit_button("Update"):
-                        update_technology_expertise(tech['id'], new_expertise, new_status)
+                        update_technology_expertise(tech["id"], new_expertise, new_status)
                         st.success("Updated!")
                         st.rerun()
 

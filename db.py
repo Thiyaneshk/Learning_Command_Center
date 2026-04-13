@@ -14,17 +14,14 @@ def get_connection() -> duckdb.DuckDBPyConnection:
 def init_db() -> None:
     con = get_connection()
 
-    con.execute(
-        """
+    con.execute("""
         CREATE TABLE IF NOT EXISTS topics (
             id INTEGER PRIMARY KEY,
             name TEXT UNIQUE NOT NULL
         );
-        """
-    )
+        """)
 
-    con.execute(
-        """
+    con.execute("""
         CREATE TABLE IF NOT EXISTS resources (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
@@ -40,11 +37,9 @@ def init_db() -> None:
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_accessed_at TIMESTAMP
         );
-        """
-    )
+        """)
 
-    con.execute(
-        """
+    con.execute("""
         CREATE TABLE IF NOT EXISTS sessions (
             id INTEGER PRIMARY KEY,
             resource_id INTEGER REFERENCES resources(id),
@@ -52,11 +47,9 @@ def init_db() -> None:
             duration_minutes INTEGER,
             notes TEXT
         );
-        """
-    )
+        """)
 
-    con.execute(
-        """
+    con.execute("""
         CREATE TABLE IF NOT EXISTS technologies (
             id INTEGER PRIMARY KEY,
             name TEXT UNIQUE NOT NULL,
@@ -67,8 +60,7 @@ def init_db() -> None:
             priority TEXT DEFAULT 'medium',  -- 'high', 'medium', 'low'
             description TEXT
         );
-        """
-    )
+        """)
 
 
 def upsert_topic(name: str) -> None:
@@ -200,15 +192,13 @@ def insert_session(data: Dict[str, Any]) -> None:
 
 def list_sessions():
     con = get_connection()
-    return con.execute(
-        """
+    return con.execute("""
         SELECT s.id, s.session_date, s.duration_minutes, s.notes,
                r.title AS resource_title
         FROM sessions s
         LEFT JOIN resources r ON s.resource_id = r.id
         ORDER BY s.session_date DESC, s.id DESC
-        """
-    ).df()
+        """).df()
 
 
 def upsert_technology(name: str, category: str, priority: str, description: str) -> None:
@@ -230,16 +220,18 @@ def upsert_technology(name: str, category: str, priority: str, description: str)
 def sync_technologies_from_config(tech_config: Dict) -> None:
     for category, techs in tech_config.items():
         for tech in techs:
-            upsert_technology(
-                tech['name'], category, tech.get('priority', 'medium'), tech.get('description', '')
-            )
+            upsert_technology(tech["name"], category, tech.get("priority", "medium"), tech.get("description", ""))
 
 
 def list_technologies() -> List[Dict[str, Any]]:
     con = get_connection()
-    return con.execute(
-        "SELECT id, name, category, current_expertise, target_expertise, status, priority, description FROM technologies ORDER BY category, priority DESC, name"
-    ).df().to_dict('records')
+    return (
+        con.execute(
+            "SELECT id, name, category, current_expertise, target_expertise, status, priority, description FROM technologies ORDER BY category, priority DESC, name"
+        )
+        .df()
+        .to_dict("records")
+    )
 
 
 def update_technology_expertise(tech_id: int, current_expertise: int, status: str) -> None:

@@ -33,7 +33,7 @@ jobs:
         uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude .venv
     
     - name: Format check with black
-      run: uv run black --check --diff .
+      run: uv run black --check --diff . --target-version py310
     
     - name: Run tests
       run: uv run pytest --tb=short --strict-markers

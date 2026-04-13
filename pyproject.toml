@@ -23,4 +23,8 @@ dev-dependencies = [
 exclude = ".venv,.git,__pycache__,.pytest_cache,data"
 max-line-length = 127
 
+[tool.black]
+target-version = ["py310"]
+line-length = 127
+
 
