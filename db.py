@@ -306,3 +306,10 @@ def update_technology_expertise(tech_id: int, current_expertise: int, status: st
         "UPDATE technologies SET current_expertise = ?, status = ? WHERE id = ?",
         [current_expertise, status, tech_id],
     )
+
+
+def clear_all_resources() -> None:
+    con = get_connection()
+    # Delete sessions first to avoid foreign key constraint
+    con.execute("DELETE FROM sessions")
+    con.execute("DELETE FROM resources")

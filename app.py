@@ -28,6 +28,7 @@ from db import (
     update_resource_status,
     update_technology_expertise,
     sync_resources_from_json,
+    clear_all_resources,
 )
 
 st.set_page_config(
@@ -128,8 +129,6 @@ def sidebar_clear_resources(cfg):
     if st.sidebar.button("Clear all resources"):
         if st.sidebar.checkbox("Confirm clear", key="confirm_clear"):
             # This is a destructive action, so we ask for confirmation
-            from db import clear_all_resources
-
             clear_all_resources()
             st.sidebar.success("All resources cleared. Rerun the app to see changes.")
         else:
