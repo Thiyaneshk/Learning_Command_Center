@@ -126,7 +126,7 @@ def sidebar_import_resources(cfg):
     st.sidebar.markdown("---")
     st.sidebar.subheader("Import resources")
 
-    resources_file = Path("resources.json")
+    resources_file = Path("deepseek_json_20260414_e68f25.json")
     if resources_file.exists():
         st.sidebar.write("Found `resources.json` in app folder.")
         if st.sidebar.button("Sync resources from resources.json"):

@@ -11,7 +11,51 @@ To create a comprehensive personal learning management system that empowers Data
 - Plan structured learning paths based on career goals and current skill levels
 - Achieve continuous professional development in the rapidly evolving data field
 
-## Completed Features
+## Resource Updates
+
+### Summary of Changes Made
+
+| # | Title Added | Why It Was Added | Category Gap Filled |
+|---|-------------|------------------|---------------------|
+| 1 | Python for Data Science, AI & Development | Your original list had Python mentioned in composite courses but lacked a dedicated, structured Python foundation. This IBM course covers pandas, APIs, and basic scripting—critical before you write Airflow DAGs or Spark jobs. | Python Basics |
+| 2 | Docker Tutorial for Beginners (Mosh) | Docker is tagged in Zoomcamp but can be a steep learning curve. This concise, visual tutorial is specifically noted as a pre‑Zoomcamp primer. It prevents you from getting stuck on Week 1 environment issues. | Containerization / DevOps |
+| 3 | dbt Fundamentals | You tagged dbt but had no resource for it. dbt is the industry standard for transformations inside BigQuery/Snowflake. This official free course pairs perfectly with Zoomcamp Week 4. | Analytics Engineering |
+| 4 | AWS Data Engineering (3‑Hour) | Zoomcamp uses GCP. The market is split between AWS and GCP. This short, free video gives you exposure to AWS equivalents (Glue/Athena) so you can translate your skills across clouds without paying for another full certification. | Multi‑Cloud Awareness |
+| 5 | Git and GitHub Crash Course | Not a DE tool per se, but essential for employability. You need to push your Zoomcamp homework to GitHub to create a portfolio. This ensures you don't just code locally and lose it. | Version Control |
+
+**Advisory Note on Using the Updated JSON**  
+Do not try to consume all 21 resources linearly.  
+Use the Phase 1 → Phase 2 → Phase 3 approach outlined earlier. The new entries are enablers for the main course (Zoomcamp).
+
+**Next Step:**  
+I recommend you start with entry #17 (Docker Tutorial) followed immediately by entry #1 (Zoomcamp Overview) . The rest of the list is your reference library for when you hit a specific tool week (e.g., pull up the dbt course when you reach Week 4 of Zoomcamp).
+
+**Practical Project Integration Advice**  
+The biggest mistake learners make is resource hoarding (collecting 50 links but never building). Here is a concrete plan using only free resources from your list + the additions:
+
+**Setup Environment (Free):**
+
+- Install VS Code, Docker Desktop (free), Git, and Python 3.10.
+- Create a GitHub Repo named data-engineering-zoomcamp-2026.
+
+**Follow the Zoomcamp Modules (Week-by-Week):**
+
+- Week 1: Docker + Terraform (Use the Mosh Docker video if stuck).
+- Week 2: Workflow Orchestration (Airflow).
+- Week 3: Data Warehouse (BigQuery). Important: Set a GCP Budget Alert to $1 to avoid surprise charges. Stick to free tier datasets (NYC Taxi).
+- Week 4: Analytics Engineering (dbt). Use the dbt Fundamentals course link above in parallel.
+- Week 5-6: Batch Processing (Spark).
+- Week 7-8: Streaming (Kafka).
+
+**The "Interview-Ready" Modification:**
+
+After completing the Zoomcamp, change the data source. Instead of NYC Taxi data, use a free API (e.g., OpenWeatherMap free tier or CoinGecko Crypto API).
+
+Ingest that data into GCP using Airflow.
+
+Transform it with dbt.
+
+This shows you can apply the tools, not just follow a tutorial.
 
 - ✅ Resource management: Add, browse, filter, and update learning resources (courses, articles, videos, etc.)
 - ✅ Study session tracking: Log study time and notes per resource
