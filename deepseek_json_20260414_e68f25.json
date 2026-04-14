@@ -251,6 +251,42 @@
       "tags": "git,github,version-control,collaboration",
       "notes": "You need this to document your Zoomcamp projects.",
       "rating": null
+    },
+    {
+      "title": "Terraform Basics (Data Engineering Zoomcamp 1–5)",
+      "url": "https://medium.com/@zakiearfi/terraform-basics-data-engineering-zoomcamp-1-5-0cb4e6933ab1",
+      "provider": "Medium",
+      "resource_type": "Article",
+      "topic": "Data Engineering",
+      "difficulty": "Beginner",
+      "status": "Backlog",
+      "tags": "terraform,infrastructure-as-code,gcp,zoomcamp",
+      "notes": "A companion guide to the Zoomcamp's Terraform module. Read this alongside the official module to reinforce concepts.",
+      "rating": null
+    },
+    {
+      "title": "HashiCorp Terraform Associate Certification Course (FreeCodeCamp)",
+      "url": "https://www.youtube.com/watch?v=Vt3rL2kSzCA",
+      "provider": "freeCodeCamp",
+      "resource_type": "Video",
+      "topic": "Data Engineering",
+      "difficulty": "Intermediate",
+      "status": "Backlog",
+      "tags": "terraform,infrastructure-as-code,certification,aws",
+      "notes": "A comprehensive 7-hour free course. Save this for *after* the Zoomcamp if you want to go deeper and get certified.",
+      "rating": null
+    },
+    {
+      "title": "GitHub - Getting Started with IaC (Data Minded Academy)",
+      "url": "https://github.com/datamindedacademy/getting_started_iac",
+      "provider": "GitHub",
+      "resource_type": "Docs",
+      "topic": "Data Engineering",
+      "difficulty": "Beginner",
+      "status": "Backlog",
+      "tags": "terraform,infrastructure-as-code,aws,github-actions,practice",
+      "notes": "A hands-on practice repository to solidify Terraform concepts. Use this to experiment in a safe environment.",
+      "rating": null
     }
   ]
 }
