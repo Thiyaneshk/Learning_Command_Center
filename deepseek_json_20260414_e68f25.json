@@ -117,7 +117,7 @@
       "difficulty": "Beginner",
       "status": "Backlog",
       "tags": "data-pipelines,python,sql,audit-free",
-      "notes": "Use audit option to keep it free.",
+      "notes": "URL leads to edX category page. Search 'DelftX Data Engineering' for the specific course.",
       "rating": null
     },
     {
@@ -129,7 +129,7 @@
       "difficulty": "Intermediate",
       "status": "Backlog",
       "tags": "spark,hadoop,snowflake,big-data,audit-free",
-      "notes": "Covers big data tools and Snowflake; audit is free.",
+      "notes": "URL leads to edX big data category page. Search for the specific course title on edX.",
       "rating": null
     },
     {
@@ -141,7 +141,7 @@
       "difficulty": "Beginner",
       "status": "Backlog",
       "tags": "data-engineering,overview,roles,storage,pipelines",
-      "notes": "Linked as a free starter course in DataTalks.Club article.",
+      "notes": "This is a blog post with curated course links, not a direct DataCamp course.",
       "rating": null
     },
     {
@@ -218,26 +218,26 @@
     },
     {
       "title": "dbt Fundamentals (Free Course - dbt Labs)",
-      "url": "https://www.getdbt.com/learn/",
+      "url": "https://courses.getdbt.com/courses/fundamentals",
       "provider": "dbt Labs",
       "resource_type": "Course",
       "topic": "Data Engineering",
       "difficulty": "Beginner",
       "status": "Backlog",
       "tags": "dbt,data-modeling,sql,analytics-engineering,elt",
-      "notes": "Crucial for transforming data in the warehouse. Complements BigQuery.",
+      "notes": "Crucial for transforming data in the warehouse. Complements BigQuery. Original URL was broken, now fixed.",
       "rating": null
     },
     {
       "title": "AWS Data Engineering - Free 3-Hour Course (Data with Zach)",
-      "url": "https://www.youtube.com/watch?v=dZUL87N4UYI",
-      "provider": "YouTube",
-      "resource_type": "Video",
+      "url": "https://www.coursera.org/learn/data-engineering-in-aws",
+      "provider": "Coursera",
+      "resource_type": "Course",
       "topic": "Data Engineering",
       "difficulty": "Intermediate",
       "status": "Backlog",
-      "tags": "aws,glue,athena,s3,lambda",
-      "notes": "Good alternative to see how concepts map to AWS after learning GCP in Zoomcamp.",
+      "tags": "aws,glue,athena,s3,lambda,audit-free",
+      "notes": "Original YouTube video unavailable. Replaced with Coursera audit course. Good alternative for AWS DE concepts.",
       "rating": null
     },
     {
@@ -254,26 +254,26 @@
     },
     {
       "title": "Terraform Basics (Data Engineering Zoomcamp 1–5)",
-      "url": "https://medium.com/@zakiearfi/terraform-basics-data-engineering-zoomcamp-1-5-0cb4e6933ab1",
-      "provider": "Medium",
-      "resource_type": "Article",
+      "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/1_terraform_gcp/README.md",
+      "provider": "GitHub",
+      "resource_type": "Docs",
       "topic": "Data Engineering",
       "difficulty": "Beginner",
       "status": "Backlog",
       "tags": "terraform,infrastructure-as-code,gcp,zoomcamp",
-      "notes": "A companion guide to the Zoomcamp's Terraform module. Read this alongside the official module to reinforce concepts.",
+      "notes": "Original Medium article 404. Replaced with official Zoomcamp Terraform README.",
       "rating": null
     },
     {
       "title": "HashiCorp Terraform Associate Certification Course (FreeCodeCamp)",
-      "url": "https://www.youtube.com/watch?v=Vt3rL2kSzCA",
+      "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
       "provider": "freeCodeCamp",
       "resource_type": "Video",
       "topic": "Data Engineering",
       "difficulty": "Intermediate",
       "status": "Backlog",
       "tags": "terraform,infrastructure-as-code,certification,aws",
-      "notes": "A comprehensive 7-hour free course. Save this for *after* the Zoomcamp if you want to go deeper and get certified.",
+      "notes": "Original video unavailable. Replaced with working 4-hour Terraform course.",
       "rating": null
     },
     {
