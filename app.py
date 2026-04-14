@@ -121,6 +121,19 @@ def sidebar_filters(cfg):
 
     return topic_ids, selected_providers, selected_statuses, search_text
 
+def sidebar_clear_resources(cfg):
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Clear all resources")
+
+    if st.sidebar.button("Clear all resources"):
+        if st.sidebar.checkbox("Confirm clear", key="confirm_clear"):
+            # This is a destructive action, so we ask for confirmation
+            from db import clear_all_resources
+
+            clear_all_resources()
+            st.sidebar.success("All resources cleared. Rerun the app to see changes.")
+        else:
+            st.sidebar.warning("Please check the confirmation box to enable clearing resources.")
 
 def sidebar_import_resources(cfg):
     st.sidebar.markdown("---")
@@ -436,6 +449,7 @@ def progress_view():
 def main():
     page = st.sidebar.radio("View", ["Resources", "Sessions", "Progress"])
     topic_ids, providers, statuses, search_text = sidebar_filters(cfg)
+    sidebar_clear_resources(cfg)
     sidebar_import_resources(cfg)
     sidebar_add_resource(cfg)
 
